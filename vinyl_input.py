@@ -48,4 +48,4 @@ def save_2_csv(record_info):
     # Saving data to csv file
     records.to_csv(record_csv, index=False)
 
-input_record()
+    print("Record", record_info[0], "is saved!")

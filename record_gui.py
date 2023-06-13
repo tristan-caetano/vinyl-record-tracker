@@ -5,6 +5,7 @@
 # Importing
 import PySimpleGUI as sg
 import vinyl_input as vi
+import vinyl_SQL as vs
 
 # Default for radio button values
 r_vals = ["1", "Sleeve"]
@@ -60,6 +61,7 @@ while True:
 
         # Sending values to be saved
         vi.save_2_csv([values[0], values[1], values[2], r_vals[0], r_vals[1], values[3]])
+        vs.add_entry([values[0], values[1], values[2], r_vals[0], r_vals[1], values[3]])
 
     # If window is Xed out the window will close
     elif event == sg.WIN_CLOSED:

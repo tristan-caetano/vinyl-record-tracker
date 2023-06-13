@@ -5,9 +5,6 @@
 # Importing packages
 from os.path import exists
 import pandas as pd
-import glob
-import os
-import sys
 
 # Getting inputs for record name, artist, color, LPs, jacket type, and release year
 def input_record():

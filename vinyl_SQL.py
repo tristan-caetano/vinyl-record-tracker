@@ -81,6 +81,31 @@ def get_DB_data():
     con = init_DB()
     cur = con.cursor()
 
-    result = cur.execute('''SELECT Title, Artist, Tracks, Color, LP, Jacket, Release FROM VINYL ORDER BY ARTIST,RELEASE''').fetchall()
+    result = cur.execute('''SELECT Title, Artist, Tracks, Color, LP, Jacket, Release, IMG FROM VINYL ORDER BY ARTIST,RELEASE''').fetchall()
 
     return result
+
+# Getting single row by name of album
+def get_album_by_name(title):
+
+    con = init_DB()
+    cur = con.cursor()
+
+    query = 'SELECT * FROM VINYL WHERE TITLE LIKE "'+title+'"'
+
+    result = cur.execute(query).fetchone()
+
+    return result
+
+# Getting single row by name of album
+def delete_album_by_name(title):
+
+    con = init_DB()
+    cur = con.cursor()
+
+    query = 'DELETE FROM VINYL WHERE TITLE LIKE "'+title+'"'
+
+    cur.execute(query)
+    con.commit()
+    
+

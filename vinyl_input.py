@@ -1,6 +1,7 @@
 # Tristan Caetano
 # Vinyl Record Tracker
-# Program that keeps track of what vinyl records I own.
+# Terminal program that keeps track of what vinyl records I own.
+# (NOT PART OF LARGER GUI BASED APPLICATION)
 
 # Importing packages
 from os.path import exists
@@ -37,7 +38,7 @@ def save_2_csv(record_info):
             quit()
 
         else:
-            records = pd.DataFrame(columns=["Title", "Artist", "Color", "LP", "Jacket", "Year"])
+            records = pd.DataFrame(columns=["Title", "Artist", "# of Tracks", "Color", "# of LPs", "Jacket Type", "Release"])
 
     # Adding new data to list
     records.loc[len(records.index)] = record_info

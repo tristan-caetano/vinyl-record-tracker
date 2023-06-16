@@ -66,7 +66,7 @@ jacket_radio=[sg.Text("Jacket Type"),
         sg.Radio("Quad-Fold", "jacket", key='qf'),
         sg.Radio("Box Set", "jacket", key='bs')]
 
-# Input text
+# Various elements saved to variables to make them easier to change later
 title_text = [sg.Text('Album Title', size =(15, 1)), sg.InputText()]
 artist_text = [sg.Text('Artist', size =(15, 1)), sg.InputText()]
 tracks_text = [sg.Text('# of Tracks', size =(15, 1)), sg.InputText()]
@@ -79,8 +79,8 @@ edit_button = sg.Button("Edit Entry")
 submit_button = sg.Button("Submit Entry")
 selected_row = sg.Text('')
 color_button = [sg.Text('Color of Vinyl', size =(15, 1)), sg.InputText()]
-#[sg.Image(ir.resize_image("tpab.png", (300,300)))]
 
+# Left Column Layout
 left_column = [[sg.Text("Input Album Details:", font = ("Arial Bold",15))], 
     title_text,
     [sg.Button("Get Album Details")],
@@ -94,7 +94,8 @@ left_column = [[sg.Text("Input Album Details:", font = ("Arial Bold",15))],
     jacket_radio,
     [submit_button, sg.Push(), selected_row, edit_button]]
 
-right_column = [[sg.Button("Options")], image]
+# Right Column Layout
+right_column = [image]
 
 # Window layout
 layout=[[sg.Column(left_column),
@@ -114,9 +115,12 @@ while True:
     # Getting button values
     event, values = window.read()
 
-    # Submitting to CSV/SQL
+    # If the Submit Entry/Delete Entry button is pressed
     if event == "Submit Entry":
-        if currently_editing == False:
+
+        # If not currently editing, submit data to DB
+        if currently_editing == False and values[0] != "":
+
             # If statement for LPs
             if values["1"] == True: r_vals[0] = "1"
             elif values["2"] == True: r_vals[0] = "2"
@@ -130,9 +134,6 @@ while True:
             elif values["qf"] == True: r_vals[1] = "Quad-Fold"
             elif values["bs"] == True: r_vals[1] = "Box Set"
 
-            # Sending values to be saved
-            #vi.save_2_csv([values[0], values[1], values[2], values[3], r_vals[0], r_vals[1], values[4]])
-
             # List of Items to send to add_entry
             # values[0] Title
             # values[1] Artist 
@@ -143,32 +144,116 @@ while True:
             # values[3] Release
             # img_bin IMG
             
+            # Adding new entry to DB and updating table
             vs.add_entry([values[0], values[1], values[2], values[5], r_vals[0], r_vals[1], values[3], img_bin])
-            
             table[0].update(vs.get_DB_data())
+            
+            # Resetting all values in the GUI back to default
+            values[0] = ""
+            values[1] = ""
+            values[2] = ""
+            values[4] = ""
+            values[5] = ""
+            title_text[1].update(values[0])
+            artist_text[1].update(values[1])
+            tracks_text[1].update(values[2])
+            release_text[1].update(values[4])
+            color_button[1].update(values[5])
+            image[0].update(ir.resize_image((300,300), "spotify.png", "", False))
+
+            # # Setting default radio values
+            values["1"] = True
+            values["2"] = False
+            values["3"] = False
+            values["4"] = False
+            values["s"] = True
+            values["gf"] = False
+            values["tf"] = False
+            values["qf"] = False
+            values["bs"] = False
+            window.Element('1').Update(value=True)
+            window.Element('s').Update(value=True)
+
+            # Refreshing window
             window.refresh()
 
+        # If currently editing is enabled, delete entry
         elif currently_editing == True:
-            print("here")
+            
+            # Delete currently selected entry and update table
             vs.delete_album_by_name(curr_edit_album)
             table[0].update(vs.get_DB_data())
+
+            # Setting default values for on screen elements
+            values[0] = ""
+            values[1] = ""
+            values[2] = ""
+            values[4] = ""
+            values[5] = ""
+            title_text[1].update(values[0])
+            artist_text[1].update(values[1])
+            tracks_text[1].update(values[2])
+            release_text[1].update(values[4])
+            color_button[1].update(values[5])
+            image[0].update(ir.resize_image((300,300), "spotify.png", "", False))
+
+            # # Setting default radio values
+            values["1"] = True
+            values["2"] = False
+            values["3"] = False
+            values["4"] = False
+            values["s"] = True
+            values["gf"] = False
+            values["tf"] = False
+            values["qf"] = False
+            values["bs"] = False
+            window.Element('1').Update(value=True)
+            window.Element('s').Update(value=True)
+
+            # Setting window back to default (non editing mode)
+            currently_editing = False
+            edit_button.update("Edit Entry")
+            submit_button.update("Submit Entry")
+            selected_row.update("")
+
+            # Refreshing window
             window.refresh()
 
     # Getting album details from Spotify API
     elif event == "Get Album Details":
-        album_query = values[0].replace(" ", "+")
-        spotify_details = sa.get_album_info(album_query)
-        values[0] = spotify_details[0]
-        values[1] = spotify_details[1]
-        values[2] = spotify_details[2]
-        values[4] = spotify_details[3]
-        title_text[1].update(values[0])
-        artist_text[1].update(values[1])
-        tracks_text[1].update(values[2])
-        release_text[1].update(values[4])
-        img_bin = ir.resize_image((300,300), spotify_details[4], album_query, True)
-        image[0].update(img_bin)
-        window.refresh()
+
+        # Making sure the user doesn't search for nothing
+        if values[0] != "":
+
+            # Try except block in case an error is thrown
+            try:
+                # Replacing spaces with "+" to work in the query URL
+                album_query = values[0].replace(" ", "+")
+
+                # Getting data from spotify for album name
+                spotify_details = sa.get_album_info(album_query)
+
+                # Filling in appropriate window elements
+                values[0] = spotify_details[0]
+                values[1] = spotify_details[1]
+                values[2] = spotify_details[2]
+                values[4] = spotify_details[3]
+                title_text[1].update(values[0])
+                artist_text[1].update(values[1])
+                tracks_text[1].update(values[2])
+                release_text[1].update(values[4])
+
+                # Displaying album art
+                if spotify_details[4] != "":
+                    img_bin = ir.resize_image((300,300), spotify_details[4], album_query, True)
+                    image[0].update(img_bin)
+                else:
+                    image[0].update(ir.resize_image((300,300), "spotify.png", "", False))
+
+                # Refreshing the window
+                window.refresh()
+            except:
+                print("Cannot find album using that search.")
     
     # Exporting DB table as CSV
     elif event == "Export as CSV":
@@ -178,7 +263,7 @@ while True:
     elif event == "Options":
         o.options(curr_theme, window)
     
-    # If the user selects a record
+    # If the user wants to start editing
     elif event == "Edit Entry" and currently_editing == False:
         currently_editing = True
         edit_button.update("Submit Change")
@@ -187,11 +272,14 @@ while True:
 
     # If the user is done editing
     elif event == "Edit Entry" and currently_editing == True:
+
+        # Setting stage back to normal (non editing mode)
         currently_editing = False
-        edit_button.update("Submit Entry")
-        submit_button.update(disabled=False)
+        edit_button.update("Edit Entry")
+        submit_button.update("Submit Entry", disabled=False)
         selected_row.update("")
-        print(curr_edit_album)
+
+        # If an album is selected, it is overwriten in the db
         if curr_edit_album != " ":
             
             # If statement for LPs
@@ -207,9 +295,6 @@ while True:
             elif values["qf"] == True: r_vals[1] = "Quad-Fold"
             elif values["bs"] == True: r_vals[1] = "Box Set"
 
-            # Sending values to be saved
-            #vi.save_2_csv([values[0], values[1], values[2], values[3], r_vals[0], r_vals[1], values[4]])
-
             # List of Items to send to add_entry
             # values[0] Title
             # values[1] Artist 
@@ -220,13 +305,19 @@ while True:
             # values[3] Release
             # img_bin IMG
             
-            print(values)
-            vs.delete_album_by_name(curr_edit_album)
-            vs.add_entry([values[0], values[1], values[2], values[5], r_vals[0], r_vals[1], values[3], img_bin])
-            
-            table[0].update(vs.get_DB_data())
-            window.refresh()
+            # Getting info for the specific album by name
+            results = vs.get_album_by_name(curr_edit_album)
 
+            # Deleting old entry
+            vs.delete_album_by_name(curr_edit_album)
+
+            # Adding new entry
+            vs.add_entry([values[0], values[1], values[2], values[5], r_vals[0], r_vals[1], values[3], results[7]])
+            
+            # Updating the table
+            table[0].update(vs.get_DB_data())
+
+        # Resetting all values in the GUI back to default
         values[0] = ""
         values[1] = ""
         values[2] = ""
@@ -239,27 +330,29 @@ while True:
         color_button[1].update(values[5])
         image[0].update(ir.resize_image((300,300), "spotify.png", "", False))
 
-        # If statement for jacket type
+        # # Setting default radio values
+        values["1"] = True
+        values["2"] = False
+        values["3"] = False
+        values["4"] = False
         values["s"] = True
         values["gf"] = False
         values["tf"] = False
         values["qf"] = False
         values["bs"] = False
-
-        # If statement for LPs
-        values["1"] = True
-        values["2"] = False
-        values["3"] = False
-        values["4"] = False
-
         window.Element('1').Update(value=True)
         window.Element('s').Update(value=True)
 
+        # Refreshing window
         window.refresh()
 
-
+    # If a row on the table is selected while editing is enabled
     elif event == '-TABLE-' and currently_editing == True:
+
+        # Getting data for the currently selected item
         db_data = vs.get_DB_data()
+
+        # If the current album isn't selected
         if curr_edit_album != db_data[values[event][0]][0]:
             curr_edit_album = db_data[values[event][0]][0]
             submit_button.update(disabled=False)
@@ -276,6 +369,7 @@ while True:
             # values[3] Release
             # img_bin IMG
 
+            # Updating values to reflect the currently selected item
             values[0] = results[0]
             values[1] = results[1]
             values[2] = results[2]
@@ -286,7 +380,12 @@ while True:
             tracks_text[1].update(values[2])
             release_text[1].update(values[4])
             color_button[1].update(values[5])
-            image[0].update(results[7])
+
+            # Making sure only saved images are displayed
+            if results[7] != " ":
+                image[0].update(results[7])
+            else:
+                image[0].update(ir.resize_image((300,300), "spotify.png", "", False))
 
             # If statement for jacket type
             values["s"] = False
@@ -299,8 +398,6 @@ while True:
             values["2"] = False
             values["3"] = False
             values["4"] = False
-
-            print(results[4])
 
             # If statement for LPs
             if results[4] == 1: r_vals[0] = "1"; values["1"] = True; window.Element('1').Update(value=True)
@@ -315,12 +412,45 @@ while True:
             elif results[5] == "Quad-Fold": r_vals[1] = "Quad-Fold"; values["qf"] = True; window.Element('qf').Update(value=True)
             elif results[5] == "Box Set": r_vals[1] = "Box Set"; values["bs"] = True; window.Element('bs').Update(value=True)
 
+            # Refreshing window
             window.refresh()
 
+        # If the current album was already selected deselect it
         else:
+
+            # Removing currently selected album, and disabling the delete entry button
             curr_edit_album = " "
             submit_button.update(disabled=True)
             selected_row.update("Currently Editing: None")
+
+            # Resetting all values in the GUI back to default
+            values[0] = ""
+            values[1] = ""
+            values[2] = ""
+            values[4] = ""
+            values[5] = ""
+            title_text[1].update(values[0])
+            artist_text[1].update(values[1])
+            tracks_text[1].update(values[2])
+            release_text[1].update(values[4])
+            color_button[1].update(values[5])
+            image[0].update(ir.resize_image((300,300), "spotify.png", "", False))
+
+            # # Setting default radio values
+            values["1"] = True
+            values["2"] = False
+            values["3"] = False
+            values["4"] = False
+            values["s"] = True
+            values["gf"] = False
+            values["tf"] = False
+            values["qf"] = False
+            values["bs"] = False
+            window.Element('1').Update(value=True)
+            window.Element('s').Update(value=True)
+
+            # Refreshing window
+            window.refresh()
 
     # If window is Xed out the window will close
     elif event == sg.WIN_CLOSED:

@@ -1,6 +1,7 @@
 # Tristan Caetano
 # Vinyl Record Tracker GUI
 # Option Menu GUI for Vinyl Record Tracker
+# Not currently used
 
 # Importing
 import PySimpleGUI as sg
@@ -40,6 +41,7 @@ def options(global_theme, win):
             'SandyBeach',
             'TealMono']
 
+    # Changing local theme (not global)
     layout=[[sg.Button("Change Theme")],[sg.Combo(themes, font=('Arial Bold', 14),  expand_x=True, enable_events=True,  readonly=False, key='-COMBO-')]]
 
     # Instantiating the window

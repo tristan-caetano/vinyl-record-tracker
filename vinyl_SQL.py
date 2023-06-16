@@ -57,10 +57,12 @@ def csv_2_sql():
 # Exporting SQL data to CSV
 def sql_2_csv():
 
-    db_data = get_DB_data()
+    # Getting database info
+    db_data = get_DB_data(True)
+        
+    # Saving data to dataframe and exporting to CSV file
     records = pd.DataFrame(db_data, columns=["Title", "Artist", "# of Tracks", "Color", "# of LPs", "Jacket Type", "Release"])
     records.to_csv('vinyl.csv',index=False)
-    return
 
 # Adding single entry to the DB
 def add_entry(record):
@@ -76,36 +78,48 @@ def add_entry(record):
     con.commit()
 
 # Recieving DB info
-def get_DB_data():
+def get_DB_data(no_img=False):
 
+    # Getting DB info
     con = init_DB()
     cur = con.cursor()
 
-    result = cur.execute('''SELECT Title, Artist, Tracks, Color, LP, Jacket, Release, IMG FROM VINYL ORDER BY ARTIST,RELEASE''').fetchall()
+    # If True, everything but the image is grabbed
+    if no_img:
+        # SQL query to get all info from DB except IMG
+        result = cur.execute('''SELECT Title, Artist, Tracks, Color, LP, Jacket, Release FROM VINYL ORDER BY ARTIST,RELEASE''').fetchall()
 
+    else:
+        # SQL query to get all info from DB
+        result = cur.execute('''SELECT Title, Artist, Tracks, Color, LP, Jacket, Release, IMG FROM VINYL ORDER BY ARTIST,RELEASE''').fetchall()
+
+    # Returning DB data
     return result
 
 # Getting single row by name of album
 def get_album_by_name(title):
 
+    # Getting DB info
     con = init_DB()
     cur = con.cursor()
 
+    # Query to get record info for 1 specific album by name
     query = 'SELECT * FROM VINYL WHERE TITLE LIKE "'+title+'"'
-
     result = cur.execute(query).fetchone()
 
+    # Returning DB data
     return result
 
 # Getting single row by name of album
 def delete_album_by_name(title):
 
+    # Getting DB info
     con = init_DB()
     cur = con.cursor()
 
+    # Query that deletes 1 record for a specific album by name
     query = 'DELETE FROM VINYL WHERE TITLE LIKE "'+title+'"'
 
+    # Executing the query and saving changes
     cur.execute(query)
     con.commit()
-    
-

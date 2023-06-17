@@ -79,6 +79,8 @@ edit_button = sg.Button("Edit Entry")
 submit_button = sg.Button("Submit Entry")
 selected_row = sg.Text('')
 color_button = [sg.Text('Color of Vinyl', size =(15, 1)), sg.InputText()]
+num_of_records = sg.Text('Records: ' + str(len(vs.get_DB_data())))
+login_button = sg.Button("Sign In")
 
 # Left Column Layout
 left_column = [[sg.Text("Input Album Details:", font = ("Arial Bold",15))], 
@@ -103,7 +105,7 @@ layout=[[sg.Column(left_column),
     sg.Column(right_column)],
     [sg.HorizontalSeparator()],
     table,
-    [sg.Button("Export as CSV")]
+    [sg.Button("Export as CSV"), sg.Push(), num_of_records],
     ]
 
 # Instantiating the window
@@ -174,6 +176,9 @@ while True:
             window.Element('1').Update(value=True)
             window.Element('s').Update(value=True)
 
+            # Showing the amount of records in the DB
+            num_of_records.update('Records: ' + str(len(vs.get_DB_data())))
+
             # Refreshing window
             window.refresh()
 
@@ -215,6 +220,9 @@ while True:
             edit_button.update("Edit Entry")
             submit_button.update("Submit Entry")
             selected_row.update("")
+
+            # Showing the amount of records in the DB
+            num_of_records.update('Records: ' + str(len(vs.get_DB_data())))
 
             # Refreshing window
             window.refresh()
@@ -313,6 +321,9 @@ while True:
 
             # Adding new entry
             vs.add_entry([values[0], values[1], values[2], values[5], r_vals[0], r_vals[1], values[3], results[7]])
+
+            # Showing the amount of records in the DB
+            num_of_records.update('Records: ' + str(len(vs.get_DB_data())))
             
             # Updating the table
             table[0].update(vs.get_DB_data())
@@ -451,6 +462,12 @@ while True:
 
             # Refreshing window
             window.refresh()
+
+    # # So the user can login to spotify
+    # elif event == "Sign In":
+
+    #     # Opening the sign in window
+    #     o.sign_in()
 
     # If window is Xed out the window will close
     elif event == sg.WIN_CLOSED:

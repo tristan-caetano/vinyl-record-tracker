@@ -8,6 +8,8 @@ from os.path import exists
 import pandas as pd
 
 # Initiate DB
+
+
 def init_DB():
 
     # Name of default vinyl record CSV file
@@ -18,7 +20,8 @@ def init_DB():
         # Connecting to DB
         con = sqlite3.connect("vinyl.db")
         cur = con.cursor()
-        cur.execute("CREATE TABLE vinyl(Title TEXT, Artist TEXT, Tracks INT, Color TEXT, LP INT, Jacket TEXT, Release TEXT, IMG MEDIUMBLOB)")
+        cur.execute(
+            "CREATE TABLE vinyl(Title TEXT, Artist TEXT, Tracks INT, Color TEXT, LP INT, Jacket TEXT, Release TEXT, IMG MEDIUMBLOB)")
 
     else:
         # Connecting to DB
@@ -28,6 +31,8 @@ def init_DB():
     return con
 
 # CSV file to SQL converter
+
+
 def csv_2_sql():
 
     # Getting DB info
@@ -55,16 +60,21 @@ def csv_2_sql():
     con.commit()
 
 # Exporting SQL data to CSV
+
+
 def sql_2_csv():
 
     # Getting database info
     db_data = get_DB_data(True)
-        
+
     # Saving data to dataframe and exporting to CSV file
-    records = pd.DataFrame(db_data, columns=["Title", "Artist", "# of Tracks", "Color", "# of LPs", "Jacket Type", "Release"])
-    records.to_csv('vinyl.csv',index=False)
+    records = pd.DataFrame(db_data, columns=[
+                           "Title", "Artist", "# of Tracks", "Color", "# of LPs", "Jacket Type", "Release"])
+    records.to_csv('vinyl.csv', index=False)
 
 # Adding single entry to the DB
+
+
 def add_entry(record):
 
     # Getting DB info
@@ -78,6 +88,8 @@ def add_entry(record):
     con.commit()
 
 # Recieving DB info
+
+
 def get_DB_data(no_img=False):
 
     # Getting DB info
@@ -87,16 +99,20 @@ def get_DB_data(no_img=False):
     # If True, everything but the image is grabbed
     if no_img:
         # SQL query to get all info from DB except IMG
-        result = cur.execute('''SELECT Title, Artist, Tracks, Color, LP, Jacket, Release FROM VINYL ORDER BY ARTIST,RELEASE''').fetchall()
+        result = cur.execute(
+            '''SELECT Title, Artist, Tracks, Color, LP, Jacket, Release FROM VINYL ORDER BY ARTIST COLLATE NOCASE,RELEASE''').fetchall()
 
     else:
         # SQL query to get all info from DB
-        result = cur.execute('''SELECT Title, Artist, Tracks, Color, LP, Jacket, Release, IMG FROM VINYL ORDER BY ARTIST,RELEASE''').fetchall()
+        result = cur.execute(
+            '''SELECT Title, Artist, Tracks, Color, LP, Jacket, Release, IMG FROM VINYL ORDER BY ARTIST COLLATE NOCASE,RELEASE''').fetchall()
 
     # Returning DB data
     return result
 
 # Getting single row by name of album
+
+
 def get_album_by_name(title):
 
     # Getting DB info
@@ -111,6 +127,8 @@ def get_album_by_name(title):
     return result
 
 # Getting single row by name of album
+
+
 def delete_album_by_name(title):
 
     # Getting DB info

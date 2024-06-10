@@ -5,7 +5,6 @@
 # Importing
 import vinyl_SQL as vs
 import spotify_api as sa
-import options_menu as o
 import image_resizer as ir
 
 # Main menu for terminal interface
@@ -168,6 +167,6 @@ def remove_entry_term():
 
 # Print database to terminal
 def print_database_to_term():
-    
+    print("balls")
 
 main_menu()

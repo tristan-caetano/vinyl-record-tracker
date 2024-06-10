@@ -17,6 +17,7 @@ def main_menu():
         print("1). Add a new entry.\n")
         print("2). Remove an entry.\n")
         print("3). View Database.\n")
+        print("4) Quit.\n")
         print("####################################################\n")
 
         # User input for menu selection
@@ -24,12 +25,19 @@ def main_menu():
 
         # Switch case for menu selection
         match user_in:
+
+            # Adding vinyl to menu
             case "1":
                 add_entry_term()
 
-            # case 2:
+            case "2":
+                remove_entry_term()
 
             # case 3:
+
+            # Quitting the program
+            case "4":
+                return
 
             case _:
                 print("Please choose a valid option.\n")
@@ -72,7 +80,7 @@ def add_entry_term():
                 # Getting number of vinyl discs
                 num_of_discs = input("\nHow many records (discs) are there?\n")
 
-                # Getting coloe of vinyl discs
+                # Getting color of vinyl discs
                 color_of_discs = input("\nWhat color are the discs?\n")
 
                 # Loop for jacket selection
@@ -124,6 +132,42 @@ def add_entry_term():
                     vs.add_entry([spotify_details[0], spotify_details[1], spotify_details[2], color_of_discs, num_of_discs, sleeve_choice, spotify_details[3], img_blob])
 
                     return
-                                        
+
+# Function for removing album from db
+def remove_entry_term():
+
+    # Loop for removing album from db    
+    while(True):
+        user_in = input("Type in the name of the album you would like to remove.\nLeave blank to quit.\n")
+
+        # Making sure the user doesn't search for nothing
+        if user_in != "":
+
+            # Try except block in case an error is thrown
+            try:
+                # Replacing spaces with "+" to work in the query URL
+                album_query = user_in.replace(" ", "+")
+
+                # Getting data from spotify for album name
+                spotify_details = sa.get_album_info(album_query)
+
+                # Printing recieved data to user can verify
+                print("\nAlbum Title: ", spotify_details[0],
+                    "\nArtist Name: " ,spotify_details[1],
+                    "\n# of Tracks: " ,spotify_details[2],
+                    "\nRelease Date: ", spotify_details[3])
+
+            except:
+                print("\nCannot find album using that search.\n")
+
+            user_in = input("\nIs this album correct?\n(Y) or (y) for yes, any other character for no.\n")
+
+            # If the user verified the album grabbed was correct, proceed
+            if(user_in == "y" or user_in == "Y"):
+                vs.delete_album_by_name(spotify_details[0])
+
+# Print database to terminal
+def print_database_to_term():
+    
 
 main_menu()

@@ -15,8 +15,9 @@ def main_menu():
         print("########## VINYL RECORD TRACKER MAIN MENU ##########\n")
         print("1). Add a new entry.\n")
         print("2). Remove an entry.\n")
-        print("3). View Database.\n")
-        print("4) Quit.\n")
+        print("3). Search album by name.\n")
+        print("4). View Database.\n")
+        print("5) Quit.\n")
         print("####################################################\n")
 
         # User input for menu selection
@@ -35,8 +36,11 @@ def main_menu():
             case "3":
                 search_db_by_name()
 
-            # Quitting the program
             case "4":
+                print_database_to_term()
+
+            # Quitting the program
+            case "5":
                 return
 
             case _:
@@ -177,12 +181,72 @@ def remove_entry_term():
             else: 
                 print("\nThis album is not in your database.\n")
 
+# Search database for an album
 def search_db_by_name():
-    print("ass")
+
+    # Loop for removing album from db    
+    while(True):
+        user_in = input("Type in the name of the album you would like to search for.\nLeave blank to quit.\n")
+
+        # If the input is blank, return to main menu
+        if user_in == "":
+            return
+        else:
+
+            # Try except block in case an error is thrown
+            try:
+                # Replacing spaces with "+" to work in the query URL
+                album_query = user_in.replace(" ", "+")
+
+                # Getting data from spotify for album name
+                spotify_details = sa.get_album_info(album_query)
+
+            except:
+                print("\nCannot find album using that search.\n")
+
+            # Making sure the album requested exists in the database
+            results = vs.get_album_by_name(spotify_details[0])
+
+            # If the album exists in the database, print it
+            if results is not None:
+
+                # Printing data for final user verification
+                print("\nAlbum Title: ", results[0],
+                    "\nArtist Name: " ,results[1],
+                    "\n# of Tracks: " ,results[2],
+                    "\nRelease Date: ", results[3],
+                    "\n# of Discs: ", results[4],
+                    "\nColor of Discs: ", results[5],
+                    "\nSleeve Type: ", results[6],
+                    "\n")
+            else:
+                print("\nCan't find searched album in database.\n")
                 
 
 # Print database to terminal
 def print_database_to_term():
-    print("balls")
+    
+    # Getting DB and how many
+    results = vs.get_DB_data()
+    counter = 1
+
+    # For loop that goes through every album
+    for album in results:
+
+        # Printing data for final user verification
+        print("\n",
+            str(counter) + ").",
+            "\nAlbum Title: ", album[0],
+            "\nArtist Name: " ,album[1],
+            "\n# of Tracks: " ,album[2],
+            "\nRelease Date: ", album[3],
+            "\n# of Discs: ", album[4],
+            "\nColor of Discs: ", album[5],
+            "\nSleeve Type: ", album[6],
+            "\n")
+        counter += 1
+    
+    input("Press enter to return to the main menu.\n")
+    return
 
 main_menu()

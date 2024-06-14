@@ -72,6 +72,8 @@ def sql_2_csv():
                            "Title", "Artist", "# of Tracks", "Color", "# of LPs", "Jacket Type", "Release"])
     records.to_csv('vinyl.csv', index=False)
 
+    print("\nSuccessfully added DB to CSV.\n")
+
 # Adding single entry to the DB
 
 

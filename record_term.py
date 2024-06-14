@@ -17,7 +17,8 @@ def main_menu():
         print("2). Remove an entry.\n")
         print("3). Search album by name.\n")
         print("4). View Database.\n")
-        print("5) Quit.\n")
+        print("5) Export to CSV.\n")
+        print("6) Quit.\n")
         print("####################################################\n")
 
         # User input for menu selection
@@ -39,8 +40,11 @@ def main_menu():
             case "4":
                 print_database_to_term()
 
-            # Quitting the program
             case "5":
+                vs.sql_2_csv()
+
+            # Quitting the program
+            case "6":
                 return
 
             case _:

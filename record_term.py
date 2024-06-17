@@ -17,8 +17,8 @@ def main_menu():
         print("2). Remove an entry.\n")
         print("3). Search album by name.\n")
         print("4). View Database.\n")
-        print("5) Export to CSV.\n")
-        print("6) Quit.\n")
+        print("5). Export to CSV.\n")
+        print("6). Quit.\n")
         print("####################################################\n")
 
         # User input for menu selection

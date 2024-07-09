@@ -4,7 +4,7 @@ FROM python:3.12
 # Creating working directory
 WORKDIR /app
 
-# Copying everything from soure to working directory
+# Copying everything from source to working directory
 COPY . .
 
 # Using pip to install all required packages

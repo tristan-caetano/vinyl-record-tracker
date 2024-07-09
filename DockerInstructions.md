@@ -10,6 +10,9 @@ sudo docker build -t vinyl_tracker .
 #### The container needs to be run with -ti for terminal interactivity
 sudo docker run -ti vinyl_tracker
 
+## Composing the container using docker compose (kinda janky, just run normally)
+docker-compose up
+
 ## View running containers
 docker ps
 

@@ -1,0 +1,10 @@
+version: '1.0'
+services:
+  vinyl_tracker:
+    build: vinyl_tracker
+    image: vinyl_tracker
+
+    # Terminal Interactivity (-ti)
+    tty: true # this is -t
+    stdin_open: true # this is -i
+    

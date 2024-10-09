@@ -39,3 +39,5 @@ Then, build the container:
 
 Finally, run the container with terminal interactivity (-ti):
 `sudo docker run -ti vinyl_tracker`
+
+END

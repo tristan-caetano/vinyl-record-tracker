@@ -3,7 +3,7 @@
 # GUI for Vinyl Record Tracker
 
 # Importing
-import PySimpleGUI as sg
+import FreeSimpleGUI as sg
 import vinyl_SQL as vs
 import spotify_api as sa
 import options_menu as o

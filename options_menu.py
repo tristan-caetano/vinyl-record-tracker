@@ -4,7 +4,7 @@
 # Not currently used
 
 # Importing
-import PySimpleGUI as sg
+import FreeSimpleGUI as sg
 
 # Options menu
 def options(global_theme, win):

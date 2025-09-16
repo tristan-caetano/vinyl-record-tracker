@@ -1,2 +1,3 @@
 # Not uploading api keys to github
 spotify_api_info.csv
+*pycache*

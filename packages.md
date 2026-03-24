@@ -5,13 +5,13 @@ sudo steamos-readonly disable
 sudo pacman -S tk
 
 ## PySimpleGui
-python3 -m pip install pysimplegui --break-system-packages
+python3 -m pip install freesimplegui
 
 ## Pandas
-python3 -m pip install pandas --break-system-packages
+python3 -m pip install pandas
 
 ## Requests
-python3 -m pip install requests --break-system-packages
+python3 -m pip install requests
 
 ## PIL (Pillow)
-python3 -m pip install pillow --break-system-packages
+python3 -m pip install pillow

@@ -5,12 +5,16 @@
 # Importing
 import pandas as pd
 import requests
+from dotenv import load_dotenv
+import os
 
 # Getting required api info
 def access_spotify():
 
     # Getting api key (not included in repo)
-    keys = pd.read_csv('spotify_api_info.csv')
+    load_dotenv()
+    clientid = os.getenv("CLIENTID")
+    clientsecret = os.getenv("CLIENTSECRET")
 
     # Making sure access is granted
     auth_url = 'https://accounts.spotify.com/api/token'
@@ -18,8 +22,8 @@ def access_spotify():
     # Getting authorization credentials
     auth_response = requests.post(auth_url, {
     'grant_type': 'client_credentials',
-    'client_id': keys['clientid'][0],
-    'client_secret': keys['clientsecret'][0],
+    'client_id': clientid,
+    'client_secret': clientsecret,
     })
 
     # Returning authorization info
